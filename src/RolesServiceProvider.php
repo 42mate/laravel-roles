@@ -3,6 +3,7 @@
 namespace Mate\Roles;
 
 use Illuminate\Support\ServiceProvider;
+use Mate\Roles\Console\Commands\PermissionsCommand;
 use Mate\Roles\Middleware\HasPermissions;
 
 class RolesServiceProvider extends ServiceProvider
@@ -27,6 +28,9 @@ class RolesServiceProvider extends ServiceProvider
                 __DIR__.'/../database/migrations/create_roles.php.stub' => $createRoleMigrationFile,
             ], 'migrations');
         }
+        $this->commands([
+          PermissionsCommand::class,
+        ]);
     }
 
     public function register(): void

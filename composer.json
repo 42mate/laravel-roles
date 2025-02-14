@@ -28,6 +28,6 @@
         }
     },
     "require": {
-
+        "illuminate/console": "^11.42"
     }
 }
