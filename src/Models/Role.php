@@ -14,6 +14,10 @@ class Role extends Model
 
     protected $table = 'roles';
 
+    protected $fillable = [
+      'name',
+    ];
+
     protected $with = ['users', 'permissions'];
 
     public function __construct(array $attributes = [])
