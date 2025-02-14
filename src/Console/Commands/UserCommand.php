@@ -4,16 +4,17 @@ namespace Mate\Roles\Console\Commands;
 
 use App\Models\User;
 use Illuminate\Console\Command;
+use Mate\Roles\Models\Role;
 
 
-class PermissionsCommand extends Command
+class UserCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'mate:permissions {userid} {--permissions=} {--list}';
+    protected $signature = 'mate:user-role {userid} {--roles=}';
 
     /**
      * The console command description.
@@ -27,18 +28,16 @@ class PermissionsCommand extends Command
      */
     public function handle()
     {
-        if ($this->option('list')) {
-          array_walk(config('roles.permissions'), fn (string $permission) => $this->info($permission));
-        }
-
-        $permissions = explode(',' , $this->option('permissions'));
-
-        $toAssign = array_filter($permissions, fn ($permission) => in_array($permission, config('roles.permissions')));
-
+        $roles = explode(',' , $this->option('roles'));
+        $dbRoles = Role::whereIn('name', $roles)->get()
+          ->toArray();
         $id = intval($this->argument('userid'));
         $user = User::findOrFail($id);
-
         $this->info("Updating user: {$user->id}");
-        $user->updateUserPermissions($toAssign);
+        try {
+          $user->roles()->sync(array_map(fn($role) => $role['id'], $dbRoles));
+        } catch (\Exception $e) {
+          $this->error($e);
+        }
     }
 }
