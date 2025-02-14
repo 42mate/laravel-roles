@@ -28,6 +28,13 @@
         }
     },
     "require": {
-        "illuminate/console": "^11.42"
-    }
+        "illuminate/console": "^11.42",
+        "mate/laravel-forms": "dev-main"
+    },
+    "repositories": [
+      {
+        "type": "vcs",
+        "url": "https://github.com/42mate/laravel-forms"
+      }
+    ]
 }

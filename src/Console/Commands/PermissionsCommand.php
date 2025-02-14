@@ -13,7 +13,7 @@ class PermissionsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'mate:permissions {userid} {--permissions=} {--list}';
+    protected $signature = 'mate:permissions {userid=} {--permissions=} {--list}';
 
     /**
      * The console command description.
@@ -28,15 +28,23 @@ class PermissionsCommand extends Command
     public function handle()
     {
         if ($this->option('list')) {
-          array_walk(config('roles.permissions'), fn (string $permission) => $this->info($permission));
+          $this->info('Available Permissions');
+          array_walk(config('roles.permissions'),
+                     fn (string $permission) => $this->info($permission));
+          return;
         }
 
-        $permissions = explode(',' , $this->option('permissions'));
+        $permissions = array_map(fn (string $permission) => trim($permission),
+                                 explode(',' , $this->option('permissions')));
 
-        $toAssign = array_filter($permissions, fn ($permission) => in_array($permission, config('roles.permissions')));
+        $toAssign = array_filter($permissions, fn ($permission) => in_array(
+          $permission, config('roles.permissions'))
+        );
 
         $id = intval($this->argument('userid'));
         $user = User::findOrFail($id);
+
+        var_dump("testing", $toAssign);
 
         $this->info("Updating user: {$user->id}");
         $user->updateUserPermissions($toAssign);
