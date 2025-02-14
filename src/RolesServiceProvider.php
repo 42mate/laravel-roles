@@ -28,9 +28,14 @@ class RolesServiceProvider extends ServiceProvider
                 __DIR__.'/../database/migrations/create_roles.php.stub' => $createRoleMigrationFile,
             ], 'migrations');
         }
-        $this->commands([
-          PermissionsCommand::class,
-        ]);
+
+
+        if ($this->app->runningInConsole()) {
+          $this->commands([
+            PermissionsCommand::class,
+          ]);
+        }
+
     }
 
     public function register(): void

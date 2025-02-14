@@ -13,7 +13,7 @@ class PermissionsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'mate:roles {userid=} {--permissions=} {--roles=} {--list}';
+    protected $signature = 'mate:roles {userid} {--permissions=} {--roles=} {--list}';
 
     /**
      * The console command description.
@@ -31,13 +31,13 @@ class PermissionsCommand extends Command
           array_walk(config('roles.permissions'), fn (string $permission) => $this->info($permission));
         }
 
-        $permissions = $this->option('permissions');
+        $permissions = explode(',' , $this->option('permissions'));
 
         $toAssign = array_filter($permissions, fn ($permission) => in_array($permission, config('roles.permissions')));
 
-        $user = User::findOrFail($this->argument('id'));
+        $user = User::findOrFail($this->argument('userid'));
 
-        $this->info("Updating user: {$user->id}, settting {join(' ', $toAssign)}");
+        $this->info("Updating user: {$user->id}, settting {implode(' ', $toAssign)}");
         $user->roles()->sync($toAssign);
     }
 }
