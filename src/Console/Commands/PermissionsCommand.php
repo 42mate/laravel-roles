@@ -78,8 +78,9 @@ class PermissionsCommand extends Command
     {
         $this->info("Available Permissions");
 
+        $permissions = config("roles.permissions");
         array_walk(
-            config("roles.permissions"),
+            $permissions,
             fn(string $permission) => $this->info($permission)
         );
     }
