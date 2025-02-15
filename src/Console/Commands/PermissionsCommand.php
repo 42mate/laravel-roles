@@ -108,7 +108,7 @@ class PermissionsCommand extends Command
      */
     private function updatePermissions(User $user, array $permissions): void
     {
-        $currentPermissions = $user->permissions();
+        $currentPermissions = $user->permissions()->get();
 
         $newPermissions = array_filter(
             $permissions,
