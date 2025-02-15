@@ -30,26 +30,26 @@ class RolesCommand extends Command
     public function handle()
     {
         if ($this->option('list')) {
-          array_walk(Roles::all(), fn (Role $role) => $this->info($role->name));
+            array_walk(Roles::all(), fn (Role $role) => $this->info($role->name));
         }
 
         $roleName = $this->argument('roleName');
-        $permissions = explode(',' , $this->option('permissions'));
+        $permissions = explode(',', $this->option('permissions'));
 
         $toAssign = array_filter(
-          $permissions,
-          fn ($permission) => in_array(
-            $permission,
-            config('roles.permissions')
-          )
+            $permissions,
+            fn ($permission) => in_array(
+                $permission,
+                config('roles.permissions')
+            )
         );
 
         $role = Role::firstOrCreate(['name' => $roleName]);
         $this->info("Updating Role: {$role->name}");
         try {
-          RolePermissions::updateMatrix([$role->id => $toAssign]);
+            RolePermissions::updateMatrix([$role->id => $toAssign]);
         } catch (\Exception $e) {
-          $this->error($e);
+            $this->error($e);
         }
     }
 
