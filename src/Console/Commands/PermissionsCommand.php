@@ -96,6 +96,7 @@ class PermissionsCommand extends Command
     private function setPermissions(User $user, array $permissions): void
     {
         $user->updateUserPermissions($permissions);
+        $this->showCurrentPermissions($user);
     }
 
     /**
@@ -118,8 +119,14 @@ class PermissionsCommand extends Command
         $user->permissions()->createMany(
             array_map(fn(string $permission) => ['permission' => $permission], $newPermissions)
         );
+
+        $this->showCurrentPermissions($user);
     }
 
-
+    private function showCurrentPermissions(User $user): void
+    {
+        $this->info("User: {$user->id}, Current permission: \n");
+        $user->permissions()->get()->each(fn ($permission) => $this->info("\t {$permission->permission}"));
+    }
 
 }
