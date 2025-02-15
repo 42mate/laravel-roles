@@ -53,7 +53,7 @@ class PermissionsCommand extends Command
             fn($permission) => in_array($permission, config("roles.permissions"))
         );
 
-        $id = intval($this->argument("userid"));
+        $id = intval($this->option("userid"));
         $user = User::findOrFail($id);
 
         if ($this->option("append")) {
