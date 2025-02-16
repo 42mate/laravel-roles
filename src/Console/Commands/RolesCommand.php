@@ -51,7 +51,7 @@ class RolesCommand extends Command
             return [Closure::fromCallable([$this, 'list']), []];
         }
 
-        $roleName = $this->ortion('roleName');
+        $roleName = $this->option('roleName');
         $permissions = explode(',', $this->option('permissions'));
 
         $toAssign = array_filter(
