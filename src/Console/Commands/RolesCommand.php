@@ -54,7 +54,7 @@ class RolesCommand extends Command
         $roleName = $this->option('roleName');
 
         if ($this->option('describe')) {
-            $role = Role::where('name', $roleName)->firstOrFail(['name' => $roleName]);
+            $role = Role::where('name', $roleName)->firstOrFail();
             return [Closure::fromCallable([$this, 'describe']), [$role]];
         }
 
