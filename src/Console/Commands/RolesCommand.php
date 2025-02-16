@@ -90,9 +90,8 @@ class RolesCommand extends Command
     private function describe(Role $role)
     {
         $this->info("The role {$role->name} has the following permissions:");
-        var_dump($role->permissions()->get()->toArray());
-        $permissions = $role->permissions()->get()[0];
-        $permissions->each(fn ($permission) => $this->info("\t {$permission->permission}"));
+        $permissions = $role->permissions()->get()->toArray();
+        array_walk($permissions[0], fn ($permission) => $this->info("\t {$permission['permission']}"));
     }
 
     /**
