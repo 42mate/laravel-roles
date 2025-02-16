@@ -91,7 +91,8 @@ class RolesCommand extends Command
     {
         $this->info("The role {$role->name} has the following permissions:");
         var_dump($role->permissions()->get()->toArray());
-        $role->permissions()->get()->each(fn ($permission) => $this->info("\t {$permission->permission}"));
+        $permissions = $role->permissions()->get()[0];
+        $permissions->each(fn ($permission) => $this->info("\t {$permission->permission}"));
     }
 
     /**
