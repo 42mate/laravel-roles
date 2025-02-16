@@ -66,6 +66,10 @@ class UserCommand extends Command
         $dbRoles = Role::whereIn('name', $roles)
             ->get();
 
+        if ($this->option("append")) {
+            return [Closure::fromCallable([$this, 'update']), [$user, $dbRoles]];
+        }
+
         return [Closure::fromCallable([$this, 'set']), [$user, $dbRoles]];
     }
 
@@ -108,5 +112,22 @@ class UserCommand extends Command
 
         $this->info("The user {$user->id} has the following roles:");
         $user->roles()->get()->each(fn (Role $role) => $this->info("\t {$role->name}"));
+    }
+
+    /**
+     * Appends new roles to the existing roles of a user.
+     *
+     * This method merges the current roles of the user with the newly provided roles
+     * and updates the user’s role assignments in the database.
+     *
+     * @param User       $user  The user whose roles are being updated.
+     * @param Collection $roles A collection of roles to be appended to the user.
+     *
+     * @return void
+     */
+    private function update(User $user, Collection $roles)
+    {
+        $mergedRoles = $roles->merge($user->roles()->get());
+        return $this->set($user, $mergedRoles);
     }
 }
