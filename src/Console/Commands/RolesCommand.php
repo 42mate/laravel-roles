@@ -55,6 +55,7 @@ class RolesCommand extends Command
 
         if ($this->option('describe')) {
             $role = Role::where('name', $roleName)->firstOrFail();
+            var_dump($role);
             return [Closure::fromCallable([$this, 'describe']), [$role]];
         }
 
@@ -90,6 +91,7 @@ class RolesCommand extends Command
     private function describe(Role $role)
     {
         $this->info("The role {$role->name} has the following permissions:");
+        var_dump($role->permissions());
         $role->permissions()->get()->each(fn ($permission) => $this->info("\t {$permission->permission}"));
     }
 
