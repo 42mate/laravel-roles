@@ -123,6 +123,13 @@ class PermissionsCommand extends Command
         $this->showCurrentPermissions($user);
     }
 
+    /**
+     * Display the current permissions for a given user.
+     *
+     * @param User $user The user whose permissions will be displayed.
+     *
+     * @return void
+     */
     private function showCurrentPermissions(User $user): void
     {
         $this->info("User: {$user->id}, Current permission: \n");
