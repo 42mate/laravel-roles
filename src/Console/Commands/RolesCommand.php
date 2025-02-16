@@ -85,13 +85,13 @@ class RolesCommand extends Command
      *
      * @param Role $role The role whose permissions are to be displayed.
      *
-     * @return void
+     * @return void/
      */
     private function describe(Role $role)
     {
         $this->info("The role {$role->name} has the following permissions:");
         $permissions = $role->permissions()->get()->toArray();
-        array_walk($permissions[0], fn ($permission) => $this->info("\t {$permission['permission']}"));
+        array_walk($permissions, fn ($permission) => $this->info("\t {$permission['permission']}"));
     }
 
     /**
