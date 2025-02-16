@@ -16,7 +16,7 @@ class RolesCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'mate:roles {--roleName=} {--permissions=} {--list}';
+    protected $signature = 'mate:roles {--roleName=} {--permissions=} {--list} {--describe} {--append}';
 
     /**
      * The console command description.
@@ -39,8 +39,8 @@ class RolesCommand extends Command
     /**
      * Dispatches the appropriate action based on the command options and arguments.
      *
-     * This method checks whether the 'list' option is provided. If so, it returns the closure for listing all roles.
-     * If not, it creates or fetches a role, validates and filters the permissions, and returns the closure to update the role's permissions.
+     * This method determines which action to perform based on the provided options.
+     * It can list roles, describe a specific role, update a role's permissions, or append new permissions to an existing role.
      *
      * @return array The first element is a callable (as a Closure) for the action,
      *               and the second element is an array of arguments to be passed to the action.
@@ -52,24 +52,25 @@ class RolesCommand extends Command
         }
 
         $roleName = $this->option('roleName');
-        $permissions = explode(',', $this->option('permissions'));
 
-        $toAssign = array_filter(
-            $permissions,
-            fn ($permission) => in_array(
-                $permission,
-                config('roles.permissions')
-            )
-        );
+        if ($this->option('describe')) {
+            $role = Role::where('name', $roleName)->firstOrFail(['name' => $roleName]);
+            return [Closure::fromCallable([$this, 'describe']), [$role]];
+        }
+
+        $toAssign = $this->parsePermissions();
 
         $role = Role::firstOrCreate(['name' => $roleName]);
+
+        if ($this->option('append')) {
+            return [Closure::fromCallable([$this, 'append']), [$role, $toAssign]];
+        }
+
         return [Closure::fromCallable([$this, 'update']), [$role, $toAssign]];
     }
 
     /**
-     * Lists all available permissions by printing them to the console.
-     *
-     * This method iterates through all roles and prints their names to the console.
+     * Lists all available roles by printing them to the console.
      *
      * @return void
      */
@@ -77,6 +78,19 @@ class RolesCommand extends Command
     {
         $this->info("Available Permissions");
         Role::all()->each(fn (Role $role) => $this->info("\t {$role->name}"));
+    }
+
+    /**
+     * Describes the permissions assigned to a specific role.
+     *
+     * @param Role $role The role whose permissions are to be displayed.
+     *
+     * @return void
+     */
+    private function describe(Role $role)
+    {
+        $this->info("The role {$role->name} has the following permissions:");
+        $role->permissions()->get()->each(fn ($permission) => $this->info("\t {$permission->permission}"));
     }
 
     /**
@@ -102,5 +116,45 @@ class RolesCommand extends Command
 
         $this->info("Updated Role: {$role->name}");
         array_walk($permissions, fn ($permission) => $this->info("\t {$permission}"));
+    }
+
+    /**
+     * Parses the permissions passed as a command option.
+     *
+     * This method validates the permissions against the configuration and filters out invalid ones.
+     *
+     * @return array The list of valid permissions.
+     */
+    private function parsePermissions(): array
+    {
+        $permissions = explode(',', $this->option('permissions'));
+
+        return array_filter(
+            $permissions,
+            fn ($permission) => in_array(
+                $permission,
+                config('roles.permissions')
+            )
+        );
+    }
+
+    /**
+     * Appends new permissions to an existing role without overwriting the existing ones.
+     *
+     * This method merges the new permissions with the existing ones and updates the role in the database.
+     *
+     * @param Role  $role        The role to update.
+     * @param array $permissions The new permissions to append.
+     *
+     * @return void
+     */
+    private function append(Role $role, array $permissions)
+    {
+        $toAssign = array_merge(
+            $role->permissions()->get()->map(fn ($permission) => $permission['permission'])->toArray(),
+            $permissions
+        );
+
+        $this->update($role, $toAssign);
     }
 }
