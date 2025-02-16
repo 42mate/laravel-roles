@@ -109,7 +109,16 @@ class RolesCommand extends Command
     {
         $this->info("Updating Role: {$role->name}");
         try {
-            RolePermissions::updateMatrix([$role->id => $permissions]);
+            RolePermissions::updateMatrix(
+                [
+                $role->id =>array_reduce(
+                    $permissions, function ($output, $permission) {
+                        $output[$permission] = true;
+                        return $output;
+                    }, []
+                )
+                ]
+            );
         } catch (\Exception $e) {
             $this->error($e);
             return;
