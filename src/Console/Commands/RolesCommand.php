@@ -48,14 +48,14 @@ class RolesCommand extends Command
     private function dispatch(): array
     {
         if ($this->option("list")) {
-            return [Closure::fromCallable([$this, 'list']), []];
+          return [$this->list(...), []];
         }
 
         $roleName = $this->option('roleName');
 
         if ($this->option('describe')) {
             $role = Role::where('name', $roleName)->firstOrFail();
-            return [Closure::fromCallable([$this, 'describe']), [$role]];
+            return [$this->describe(...), [$role]];
         }
 
         $toAssign = $this->parsePermissions();
@@ -63,10 +63,10 @@ class RolesCommand extends Command
         $role = Role::firstOrCreate(['name' => $roleName]);
 
         if ($this->option('append')) {
-            return [Closure::fromCallable([$this, 'append']), [$role, $toAssign]];
+          return [$this->append(...), [$role, $toAssign]];
         }
 
-        return [Closure::fromCallable([$this, 'update']), [$role, $toAssign]];
+        return [$this->update(...), [$role, $toAssign]];
     }
 
     /**

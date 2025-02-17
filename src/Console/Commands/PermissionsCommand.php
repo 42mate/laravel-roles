@@ -40,7 +40,7 @@ class PermissionsCommand extends Command
     private function dispatch(): array
     {
         if ($this->option("list")) {
-            return [Closure::fromCallable([$this, 'list']), []];
+            return [$this->list(...), []];
         }
 
         $permissions = array_map(
@@ -58,14 +58,14 @@ class PermissionsCommand extends Command
 
         if ($this->option("append")) {
             return [
-            Closure::fromCallable([$this, 'updatePermissions']),
-            [$user, $toAssign]
+              $this->updatePermissions(...),
+              [$user, $toAssign]
             ];
         }
 
         return [
-        Closure::fromCallable([$this, 'setPermissions']),
-        [$user, $toAssign]
+            $this->setPermissions(...),
+            [$user, $toAssign]
         ];
     }
 

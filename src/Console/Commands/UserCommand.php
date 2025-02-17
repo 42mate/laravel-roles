@@ -59,7 +59,7 @@ class UserCommand extends Command
         $user = User::findOrFail($id);
 
         if ($this->option('list')) {
-            return [Closure::fromCallable([$this, 'list']), [$user]];
+          return [$this->list(...), [$user]];
         }
 
         $roles = explode(',', $this->option('roles'));
@@ -67,10 +67,10 @@ class UserCommand extends Command
             ->get();
 
         if ($this->option("append")) {
-            return [Closure::fromCallable([$this, 'update']), [$user, $dbRoles]];
+          return [$this->update(...), [$user, $dbRoles]];
         }
 
-        return [Closure::fromCallable([$this, 'set']), [$user, $dbRoles]];
+        return [$this->set(...), [$user, $dbRoles]];
     }
 
     /**
