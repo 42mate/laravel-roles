@@ -5,8 +5,8 @@ namespace Mate\Roles\Console\Commands;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Mate\Roles\Models\Role;
-use Closure;
 use Illuminate\Support\Collection;
+use Mate\Roles\Services\PermissionsService;
 
 class UserCommand extends Command
 {
@@ -23,6 +23,12 @@ class UserCommand extends Command
      * @var string
      */
     protected $description = 'Configure a User with one or many permissions or even a complete role';
+
+    protected PermissionsService $service;
+
+    public function __construct() {
+        $this->service = new PermissionsService();
+    }
 
     /**
      * Execute the console command.
@@ -105,7 +111,7 @@ class UserCommand extends Command
     {
         $this->info("Updating user: {$user->id}");
         try {
-            $user->roles()->sync($roles->map(fn (Role $role) => $role['id']));
+            $this->service->setUserRoles($user, $roles);
         } catch (\Exception $e) {
             $this->error($e);
         }
@@ -127,7 +133,8 @@ class UserCommand extends Command
      */
     private function update(User $user, Collection $roles)
     {
-        $mergedRoles = $roles->merge($user->roles()->get());
-        return $this->set($user, $mergedRoles);
+        $this->service->updateUserRoles($user, $roles);
+        $this->info("The user {$user->id} has the following roles:");
+        $user->roles()->get()->each(fn (Role $role) => $this->info("\t {$role->name}"));
     }
 }
