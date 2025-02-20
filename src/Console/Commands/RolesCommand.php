@@ -26,6 +26,7 @@ class RolesCommand extends Command
 
     public function __construct() {
         $this->service = new PermissionsService();
+        parent::__construct();
     }
 
     /**
