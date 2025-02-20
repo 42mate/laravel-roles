@@ -2,12 +2,9 @@
 
 namespace Mate\Roles\Console\Commands;
 
-use App\Models\User;
 use Mate\Roles\Models\Role;
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Mate\Roles\Models\RolePermissions;
-use Closure;
+use Mate\Roles\Services\PermissionsService;
 
 class RolesCommand extends Command
 {
@@ -24,6 +21,12 @@ class RolesCommand extends Command
      * @var string
      */
     protected $description = 'Configure a role with a group of permissions';
+
+    protected PermissionsService $service;
+
+    public function __construct() {
+        $this->service = new PermissionsService();
+    }
 
     /**
      * Execute the console command.
@@ -77,7 +80,7 @@ class RolesCommand extends Command
     private function list()
     {
         $this->info("Available Permissions");
-        Role::all()->each(fn (Role $role) => $this->info("\t {$role->name}"));
+        $this->service->listRoles()->each(fn (Role $role) => $this->info("\t {$role->name}"));
     }
 
     /**
@@ -109,16 +112,7 @@ class RolesCommand extends Command
     {
         $this->info("Updating Role: {$role->name}");
         try {
-            RolePermissions::updateMatrix(
-                [
-                $role->id =>array_reduce(
-                    $permissions, function ($output, $permission) {
-                        $output[$permission] = true;
-                        return $output;
-                    }, []
-                )
-                ]
-            );
+            $this->service->setRolePermissions($role, $permissions);
         } catch (\Exception $e) {
             $this->error($e);
             return;
@@ -160,11 +154,8 @@ class RolesCommand extends Command
      */
     private function append(Role $role, array $permissions)
     {
-        $toAssign = array_merge(
-            $role->permissions()->get()->map(fn ($permission) => $permission['permission'])->toArray(),
-            $permissions
-        );
-
-        $this->update($role, $toAssign);
+        $this->updateRolePermissions($role, $permissions);
+        $this->info("Updated Role: {$role->name}");
+        array_walk($permissions, fn ($permission) => $this->info("\t {$permission}"));
     }
 }

@@ -2,9 +2,9 @@
 
 namespace Mate\Roles\Console\Commands;
 
-use Closure;
 use App\Models\User;
 use Illuminate\Console\Command;
+use PermissionsService;
 
 class PermissionsCommand extends Command
 {
@@ -21,6 +21,12 @@ class PermissionsCommand extends Command
      * @var string
      */
     protected $description = "Configure a User with one or many permissions or even a complete role";
+
+    protected PermissionsService $service;
+
+    public function __construct() {
+        $this->service = new PermissionsService();
+    }
 
     /**
      * Execute the console command.
@@ -78,7 +84,7 @@ class PermissionsCommand extends Command
     {
         $this->info("Available Permissions");
 
-        $permissions = config("roles.permissions");
+        $permissions = $this->service->list();
         array_walk(
             $permissions,
             fn(string $permission) => $this->info($permission)
@@ -95,7 +101,7 @@ class PermissionsCommand extends Command
      */
     private function setPermissions(User $user, array $permissions): void
     {
-        $user->updateUserPermissions($permissions);
+        $this->service->updateUserPermissions($user, $permissions);
         $this->showCurrentPermissions($user);
     }
 
@@ -109,17 +115,7 @@ class PermissionsCommand extends Command
      */
     private function updatePermissions(User $user, array $permissions): void
     {
-        $currentPermissions = $user->permissions()->get();
-
-        $newPermissions = array_filter(
-            $permissions,
-            fn (string $permission) => !($currentPermissions->contains('permission', $permission))
-        );
-
-        $user->permissions()->createMany(
-            array_map(fn(string $permission) => ['permission' => $permission], $newPermissions)
-        );
-
+        $this->service->updateUserPermissions($user, $permissions);
         $this->showCurrentPermissions($user);
     }
 

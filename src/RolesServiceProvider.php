@@ -6,7 +6,8 @@ use Illuminate\Support\ServiceProvider;
 use Mate\Roles\Console\Commands\PermissionsCommand;
 use Mate\Roles\Console\Commands\RolesCommand;
 use Mate\Roles\Console\Commands\UserCommand;
-use Mate\Roles\Middleware\HasPermissions;
+use Mate\Roles\Middlehware\HasPermissions;
+use Mate\Roles\Services\PermissionsService;
 
 class RolesServiceProvider extends ServiceProvider
 {
@@ -39,7 +40,6 @@ class RolesServiceProvider extends ServiceProvider
             UserCommand::class
           ]);
         }
-
     }
 
     public function register(): void
@@ -51,5 +51,6 @@ class RolesServiceProvider extends ServiceProvider
         app('router')->aliasMiddleware('has-permissions', HasPermissions::class);
 
         $this->mergeConfigFrom(__DIR__.'/../config/roles.php', 'roles');
+        $this->app->singleton(PermissionsService::class, fn ($app) => new PermissionsService());
     }
 }

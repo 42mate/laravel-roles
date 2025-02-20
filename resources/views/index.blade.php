@@ -1,4 +1,4 @@
-@extends('layouts.tables')
+@extends('mate/roles::layouts.tables')
 
 @section('title', __('Permisos'))
 
