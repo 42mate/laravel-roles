@@ -5,6 +5,7 @@ namespace Mate\Roles\Services;
 use Illuminate\Support\Collection;
 use Mate\Roles\Models\Role;
 use Mate\Roles\Models\RolePermissions;
+use App\Models\User;
 
 /**
  * Service class to manage permissions, roles, and role-permissions matrix.
@@ -119,7 +120,7 @@ class PermissionsService
      */
     public function setUserPermssions(User $user, array $permissions): void
     {
-        $toSet = array_filter($permissions, fn(string $permission) => in_array($permission, $this->list()));
+        $toSet = array_filter($permissions, fn(string $permission) => in_array($permission, $this->list(asArray: true)));
         $user->updateUserPermissions($toSet);
     }
 
@@ -132,7 +133,7 @@ class PermissionsService
      */
     public function updateUserPermissions(User $user, array $permissions): void
     {
-        $validPermissions = array_filter($permissions, fn(string $permission) => in_array($permission, $this->list()));
+        $validPermissions = array_filter($permissions, fn(string $permission) => in_array($permission, $this->list(asArray: true)));
         $currentPermissions = $user->permissions()->get();
         $newPermissions = array_filter(
             $validPermissions,
