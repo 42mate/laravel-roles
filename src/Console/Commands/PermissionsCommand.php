@@ -85,7 +85,7 @@ class PermissionsCommand extends Command
     {
         $this->info("Available Permissions");
 
-        $permissions = $this->service->list();
+        $permissions = $this->service->list(asArray: true);
         array_walk(
             $permissions,
             fn(string $permission) => $this->info($permission)
