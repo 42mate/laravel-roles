@@ -4,7 +4,7 @@ namespace Mate\Roles\Console\Commands;
 
 use App\Models\User;
 use Illuminate\Console\Command;
-use PermissionsService;
+
 
 class PermissionsCommand extends Command
 {
