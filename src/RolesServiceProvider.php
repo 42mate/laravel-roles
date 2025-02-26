@@ -6,7 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Mate\Roles\Console\Commands\PermissionsCommand;
 use Mate\Roles\Console\Commands\RolesCommand;
 use Mate\Roles\Console\Commands\UserCommand;
-use Mate\Roles\Middlehware\HasPermissions;
+use Mate\Roles\Middleware\HasPermissions;
 use Mate\Roles\Services\PermissionsService;
 
 class RolesServiceProvider extends ServiceProvider
