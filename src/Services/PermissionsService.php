@@ -118,7 +118,7 @@ class PermissionsService
      * @param array $permissions The array of permissions to assign.
      * @return void
      */
-    public function setUserPermssions(User $user, array $permissions): void
+    public function setUserPermissions(User $user, array $permissions): void
     {
         $toSet = array_filter($permissions, fn(string $permission) => in_array($permission, $this->list(asArray: true)));
         $user->updateUserPermissions($toSet);
