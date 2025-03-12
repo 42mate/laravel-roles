@@ -209,4 +209,19 @@ class PermissionsService
         $mergedRoles = $roles->merge($user->roles()->get());
         $this->setUserRoles($user, $mergedRoles);
     }
+
+    public function updateRoleMatrix(array $matrix): void
+    {
+        $updatedMatrix = array_reduce($matrix, function(array $carry, array $role) {
+            $name = $role['name'];
+            $id = Role::where('name', $name)->get()?->first()->id;
+            if (!$id) {
+                throw new \Exception("Error getting role id $name");
+            }
+
+            $carry[$name] = $role['permissions'];
+        }, []);
+
+        RolePermissions::updateMatrix($updatedMatrix);
+    }
 }
