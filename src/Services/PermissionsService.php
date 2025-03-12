@@ -220,7 +220,7 @@ class PermissionsService
             }
 
             $carry[$id] = $role['permissions'];
-            return $carry
+            return $carry;
         }, []);
 
         RolePermissions::updateMatrix($updatedMatrix);
