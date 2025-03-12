@@ -219,7 +219,7 @@ class PermissionsService
                 throw new \Exception("Error getting role id $name");
             }
 
-            $carry[$name] = $role['permissions'];
+            $carry[$id] = $role['permissions'];
             return $carry
         }, []);
 
