@@ -80,6 +80,7 @@ class RolePermissions extends Model
     {
         DB::beginTransaction();
         try {
+
             $roles = Role::all();
             foreach ($roles as $role) {
                 $forCreate = [];
@@ -95,8 +96,12 @@ class RolePermissions extends Model
                     $forCreate[$permission] = ['permission' => $permission];
                 }
 
+                $newRolePermissionsNames =array_is_list($newRolePermissions)
+                    ? $newRolePermissions
+                    : array_keys($newRolePermissions);
+
                 foreach ($role->permissions as $permission) {
-                    if (! in_array($permission->permission, $newRolePermissions)) {
+                    if (! in_array($permission->permission, $newRolePermissionsNames)) {
                         //Added for deletion since is not in the updated list.
                         $forDelete[] = $permission->permission;
                     } else {
@@ -105,11 +110,13 @@ class RolePermissions extends Model
                     }
                 }
 
+
                 //Delete the ones that are not in the updated list.
                 $role->permissions()->whereIn('permission', $forDelete)->delete();
 
                 //Create the ones that are not in the database.
                 $role->permissions()->createMany($forCreate);
+
             }
             DB::commit();
         } catch (\Exception $e) {
@@ -117,4 +124,5 @@ class RolePermissions extends Model
             throw $e;
         }
     }
+
 }

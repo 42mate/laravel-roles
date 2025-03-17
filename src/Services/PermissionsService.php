@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Mate\Roles\Models\Role;
 use Mate\Roles\Models\RolePermissions;
 use App\Models\User;
+use Exception;
 
 /**
  * Service class to manage permissions, roles, and role-permissions matrix.
@@ -156,14 +157,7 @@ class PermissionsService
     {
         RolePermissions::updateMatrix(
             [
-                $role->id => array_reduce(
-                    $permissions,
-                    function ($output, $permission) {
-                        $output[$permission] = true;
-                        return $output;
-                    },
-                    []
-                )
+                $role->id => $permissions,
             ]
         );
     }
@@ -208,5 +202,37 @@ class PermissionsService
     {
         $mergedRoles = $roles->merge($user->roles()->get());
         $this->setUserRoles($user, $mergedRoles);
+    }
+
+    /**
+     * Updates the role-permission matrix based on the provided array.
+     *
+     * This method processes an array of roles where each role contains a
+     * 'name' and associated 'permissions'. It retrieves the role ID by
+     * querying the database using the role name. If a role ID cannot
+     * be found, an exception is thrown. The permissions for each
+     * role are then collected into a matrix, which is subsequently
+     * used to update the role-permission mapping.
+     *
+     * @param array $matrix An array of roles, where each role is an
+     * associative array with a 'name' key and a 'permissions' key.
+     *
+     * @throws \Exception if a role ID cannot be found for a given role name.
+     */
+    public function updateRoleMatrix(array $matrix): void
+    {
+        $updatedMatrix = array_reduce($matrix, function(array $carry, array $role) {
+            $name = $role['name'];
+            $id = Role::where('name', $name)->get()?->first()->id;
+            if (!$id) {
+                throw new Exception("Error getting role id $name");
+            }
+
+            $carry[$id] = array_filter($role['permissions'],
+                                       fn(bool $value, string $_) => $value, ARRAY_FILTER_USE_BOTH);
+            return $carry;
+        }, []);
+
+        RolePermissions::updateMatrix($updatedMatrix);
     }
 }
