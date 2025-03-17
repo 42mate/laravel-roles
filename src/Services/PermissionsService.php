@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Mate\Roles\Models\Role;
 use Mate\Roles\Models\RolePermissions;
 use App\Models\User;
+use Exception;
 
 /**
  * Service class to manage permissions, roles, and role-permissions matrix.
@@ -224,7 +225,7 @@ class PermissionsService
             $name = $role['name'];
             $id = Role::where('name', $name)->get()?->first()->id;
             if (!$id) {
-                throw new \Exception("Error getting role id $name");
+                throw new Exception("Error getting role id $name");
             }
 
             $carry[$id] = array_filter($role['permissions'],
