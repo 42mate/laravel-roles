@@ -227,10 +227,8 @@ class PermissionsService
                 throw new \Exception("Error getting role id $name");
             }
 
-            $carry[$id] = array_keys(
-                array_filter($role['permissions'],
-                             fn(bool $value, string $_) => $value, ARRAY_FILTER_USE_BOTH));
-
+            $carry[$id] = array_filter($role['permissions'],
+                                       fn(bool $value, string $_) => $value, ARRAY_FILTER_USE_BOTH);
             return $carry;
         }, []);
 
