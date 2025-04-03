@@ -22,7 +22,7 @@ class HasRoles
 
         // If the user does not have any of the required permissions, you can redirect them or return an error response.
         return redirect()
-            ->route("home")
+            ->route("dashboard")
             ->with("error", "You do not have permission to access this page.");
     }
 }
