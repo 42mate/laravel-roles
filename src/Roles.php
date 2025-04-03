@@ -15,8 +15,8 @@ class Roles
      */
     protected function implementsHasPermissions(Authenticatable $user): bool
     {
-        if (! in_array('Mate\Roles\HasRoles', class_uses($user))) {
-            throw new Exception('User model must use HasRoles trait');
+        if (!in_array("Mate\Roles\HasRoles", class_uses($user))) {
+            throw new Exception("User model must use HasRoles trait");
         }
 
         return true;
@@ -49,7 +49,7 @@ class Roles
     {
         $user = $this->getUser();
 
-        return $user->hasRole('admin') || $user->hasRole($role);
+        return $user->hasRole($role);
     }
 
     /**
@@ -59,7 +59,7 @@ class Roles
     {
         $user = $this->getUser();
 
-        return $user->hasRole('admin') || $user->hasPermission($permission);
+        return $user->hasRole("admin") || $user->hasPermission($permission);
     }
 
     /**
@@ -69,7 +69,6 @@ class Roles
     {
         $user = $this->getUser();
 
-        return $user->hasRole('admin') || $user->hasPermissions($permissions);
+        return $user->hasRole("admin") || $user->hasPermissions($permissions);
     }
-
 }
