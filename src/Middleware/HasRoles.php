@@ -3,7 +3,7 @@
 namespace Mate\Roles\Middleware;
 
 use Closure;
-use Illuminate\Container\Attributes\Auth;
+use Illuminate\Support\Facades\Auth;
 use Mate\Roles\Facades\Roles;
 
 class HasRoles
