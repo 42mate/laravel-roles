@@ -26,7 +26,7 @@ class HasRoles
 
         $result = null;
         foreach ($roles as $role) {
-            if (array_key_exists($redirects, $role)) {
+            if (array_key_exists($role, $redirects)) {
                 $result = redirect()->route($redirects[$role]);
                 break;
             }

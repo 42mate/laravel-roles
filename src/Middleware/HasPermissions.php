@@ -23,9 +23,9 @@ class HasPermissions
         $redirects = config("roles.redirects.permissions");
 
         $result = null;
-        foreach ($roles as $role) {
-            if (array_key_exists($redirects, $role)) {
-                $result = redirect()->route($redirects[$role]);
+        foreach ($permissions as $permission) {
+            if (array_key_exists($permission, $redirects)) {
+                $result = redirect()->route($redirects[$permission]);
                 break;
             }
         }
