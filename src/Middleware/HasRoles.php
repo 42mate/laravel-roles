@@ -23,11 +23,16 @@ class HasRoles
         }
 
         $redirects = config("roles.redirects.roles");
-
         $result = null;
-        foreach ($roles as $role) {
-            if (array_key_exists($role, $redirects)) {
-                $result = redirect()->route($redirects[$role]);
+        $user = Auth::user();
+
+        if (empty($user)) {
+            return false;
+        }
+
+        foreach ($user->roles()->get() as $role) {
+            if (array_key_exists($role->name, $redirects)) {
+                $result = redirect()->route($redirects[$role->name]);
                 break;
             }
         }
