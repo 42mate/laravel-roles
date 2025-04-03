@@ -30,7 +30,7 @@ class HasPermissions
             }
         }
 
-        if (is_nul($result)) {
+        if (is_null($result)) {
             $result = redirect()->route($redirects["default"]);
         }
 
