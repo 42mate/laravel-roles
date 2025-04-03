@@ -7,6 +7,8 @@ use Mate\Roles\Facades\Roles;
 
 class HasRoles
 {
+    public string $redirectTo = "index";
+
     /**
      * Handle an incoming request.
      *
@@ -20,9 +22,23 @@ class HasRoles
             }
         }
 
-        // If the user does not have any of the required permissions, you can redirect them or return an error response.
-        return redirect()
-            ->route("dashboard")
-            ->with("error", "You do not have permission to access this page.");
+        $redirects = config("roles.redirects.roles");
+
+        $result = null;
+        foreach ($roles as $role) {
+            if (array_key_exists($redirects, $role)) {
+                $result = redirect()->route($redirects[$role]);
+                break;
+            }
+        }
+
+        if (is_nul($result)) {
+            $result = redirect()->route($redirects["default"]);
+        }
+
+        return $result->with(
+            "error",
+            "You do not have permission to access this page."
+        );
     }
 }

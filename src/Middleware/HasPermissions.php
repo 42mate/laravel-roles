@@ -20,7 +20,23 @@ class HasPermissions
             }
         }
 
-        // If the user does not have any of the required permissions, you can redirect them or return an error response.
-        return redirect()->route('home')->with('error', 'You do not have permission to access this page.');
+        $redirects = config("roles.redirects.permissions");
+
+        $result = null;
+        foreach ($roles as $role) {
+            if (array_key_exists($redirects, $role)) {
+                $result = redirect()->route($redirects[$role]);
+                break;
+            }
+        }
+
+        if (is_nul($result)) {
+            $result = redirect()->route($redirects["default"]);
+        }
+
+        return $result->with(
+            "error",
+            "You do not have permission to access this page."
+        );
     }
 }
