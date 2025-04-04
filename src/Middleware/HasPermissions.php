@@ -22,7 +22,20 @@ class HasPermissions
 
         $redirects = config("roles.redirects.permissions");
 
+        $user = Auth::user();
+
+        if (empty($user)) {
+            return false;
+        }
+
         $result = null;
+        foreach ($user->permissions()->get() as $permission) {
+            if (array_key_exists($permission->permission, $redirects)) {
+                $result = redirect()->route($redirects[$permission->name]);
+                break;
+            }
+        }
+
         foreach ($permissions as $permission) {
             if (array_key_exists($permission, $redirects)) {
                 $result = redirect()->route($redirects[$permission]);
