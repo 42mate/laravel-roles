@@ -48,8 +48,10 @@ class Roles
     public function hasRole(string $role): bool
     {
         $user = $this->getUser();
+        $superadmin = config("roles.superadmin", "admin");
 
-        return $user->hasRole("admin") || $user->hasRole($role);
+
+        return $user->hasRole($superadmin)) || $user->hasRole($role);
     }
 
     /**
