@@ -50,8 +50,7 @@ class Roles
         $user = $this->getUser();
         $superadmin = config("roles.superadmin", "admin");
 
-
-        return $user->hasRole($superadmin)) || $user->hasRole($role);
+        return $user->hasRole($superadmin) || $user->hasRole($role);
     }
 
     /**
