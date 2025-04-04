@@ -29,4 +29,6 @@ return [
             "default" => "index",
         ],
     ],
+
+    "superadmin" => "admin",
 ];
