@@ -4,6 +4,7 @@ namespace Mate\Roles\Middleware;
 
 use Closure;
 use Mate\Roles\Facades\Roles;
+use Illuminate\Support\Facades\Auth;
 
 class HasPermissions
 {
@@ -35,14 +36,6 @@ class HasPermissions
                 break;
             }
         }
-
-        foreach ($permissions as $permission) {
-            if (array_key_exists($permission, $redirects)) {
-                $result = redirect()->route($redirects[$permission]);
-                break;
-            }
-        }
-
         if (is_null($result)) {
             $result = redirect()->route($redirects["default"]);
         }
