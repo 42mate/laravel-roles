@@ -58,7 +58,7 @@ class Roles
     public function hasPermission(string $permission): bool
     {
         $user = $this->getUser();
-        $superadmin = config('roles.superadmin', 'admin')
+        $superadmin = config("roles.superadmin", "admin");
 
         return $user->hasRole($superadmin) || $user->hasPermission($permission);
     }
@@ -69,7 +69,9 @@ class Roles
     public function hasPermissions(array $permissions): bool
     {
         $user = $this->getUser();
+        $superadmin = config("roles.superadmin", "admin");
 
-        return $user->hasRole($superadmin) || $user->hasPermissions($permissions);
+        return $user->hasRole($superadmin) ||
+            $user->hasPermissions($permissions);
     }
 }
