@@ -3,39 +3,41 @@
 namespace Mate\Roles\Middleware;
 
 use Closure;
-use Mate\Roles\Facades\Roles;
 use Illuminate\Support\Facades\Auth;
+use Mate\Roles\Facades\Roles;
 
-class HasPermissions
+class HasRoles
 {
+    public string $redirectTo = "index";
+
     /**
      * Handle an incoming request.
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle($request, Closure $next, ...$permissions)
+    public function handle($request, Closure $next, ...$roles)
     {
-        foreach ($permissions as $permission) {
-            if (Roles::hasPermission($permission)) {
+        foreach ($roles as $role) {
+            if (Roles::hasRole($role)) {
                 return $next($request);
             }
         }
 
-        $redirects = config("roles.redirects.permissions");
-
+        $redirects = config("roles.redirects.roles");
+        $result = null;
         $user = Auth::user();
 
         if (empty($user)) {
             return false;
         }
 
-        $result = null;
-        foreach ($user->permissions()->get() as $permission) {
-            if (array_key_exists($permission->permission, $redirects)) {
-                $result = redirect()->route($redirects[$permission->name]);
+        foreach ($user->roles()->get() as $role) {
+            if (array_key_exists($role->name, $redirects)) {
+                $result = redirect()->route($redirects[$role->name]);
                 break;
             }
         }
+
         if (is_null($result)) {
             $result = redirect()->route($redirects["default"]);
         }
