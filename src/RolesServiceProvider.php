@@ -15,7 +15,7 @@ class RolesServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadViewsFrom(__DIR__ . "/../resources/views", "roles");
-        $this->loadRoutesFrom(__DIR__ . "/../routes/routes.php");
+        //$this->loadRoutesFrom(__DIR__ . "/../routes/routes.php");
 
         $this->publishes(
             [
