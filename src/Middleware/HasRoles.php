@@ -47,8 +47,9 @@ class HasRoles
         
         if ($flashConfig['enabled'] && $flashConfig['format'] === 'inertia') {
             return $result->with('flash.error', $message);
-        } else {
-            return $result->with('error', $message);
-        }
+        } 
+        
+        return $result->with('error', $message);
+        
     }
 }

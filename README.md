@@ -198,7 +198,7 @@ This package is support InertiaJs
 
 ### Flash Messages
 
-When using InertiaJS, the package can format flash messages frontend. Success and error messages are automatically shared with your InertiaJS pages using the configured format.
+When using InertiaJS, the package can format flash messages on the frontend components. Success and error messages are automatically shared with your InertiaJS pages using the configured format.
 
 ### Configuration
 
