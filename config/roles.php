@@ -31,4 +31,13 @@ return [
     ],
 
     "superadmin" => "admin",
+
+    'flash' => [
+        'enabled' => env('ROLES_FLASH_ENABLED', false),
+        'format' => env('ROLES_FLASH_FORMAT', 'standard'), // 'standard' | 'inertia'
+        'messages' => [
+            'permission_denied' => env('ROLES_PERMISSION_DENIED_MESSAGE', 'You do not have PERMISSION to access this page.'),
+            'role_denied' => env('ROLES_ROLE_DENIED_MESSAGE', 'You do not have the required ROLE to access this page.'),
+        ]
+    ],
 ];

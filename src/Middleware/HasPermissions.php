@@ -40,9 +40,13 @@ class HasPermissions
             $result = redirect()->route($redirects["default"]);
         }
 
-        return $result->with(
-            "error",
-            "You do not have permission to access this page."
-        );
+        $flashConfig = config('roles.flash');
+        $message = $flashConfig['messages']['permission_denied'];
+        
+        if ($flashConfig['enabled'] && $flashConfig['format'] === 'inertia') {
+            return $result->with('flash.error', $message);
+        } else {
+            return $result->with('error', $message);
+        }
     }
 }
