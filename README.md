@@ -192,28 +192,29 @@ required permission to grant or deny access to an action or a view, component, r
 
 Do not delete the `manage permissions` permission, it's required to access the permissions' matrix.
 
-## InertiaJS Compatibility
+### Flash Messages:
 
-This package is support InertiaJs
+When using **WITH** InertiaJS, this package can format Laravel's Flash messages on developed frontend components.
+`Success` and `Error` component messages are automatically shared with your InertiaJS pages using the configured format.
 
-### Flash Messages
+### Configuration:
 
-When using InertiaJS, the package can format flash messages on the frontend components. Success and error messages are automatically shared with your InertiaJS pages using the configured format.
+To enable InertiaJS compatibility, you need to setup the following environment variables in your `.env` file:
 
-### Configuration
+#### Configuration Options:
 
-To enable InertiaJS compatibility, you need to configure the following environment variables in your `.env` file:
+- `ROLES_FLASH_ENABLED`: Enable/Disable Flash messages (default: false)
+- `ROLES_FLASH_FORMAT`: Set to 'inertia' for InertiaJS format, 'standard' for traditional Laravel flash messages
+- `ROLES_PERMISSION_DENIED_MESSAGE`: Custom message for permission denied errors
+- `ROLES_ROLE_DENIED_MESSAGE`: Custom message for role denied errors
 
-```env
+#### Configuration example:
+
+`.env`
+
+```
 ROLES_FLASH_ENABLED=true
 ROLES_FLASH_FORMAT=inertia
 ROLES_PERMISSION_DENIED_MESSAGE="You do not have PERMISSION to access this page."
 ROLES_ROLE_DENIED_MESSAGE="You do not have the required ROLE to access this page."
 ```
-
-#### Configuration Options
-
-- `ROLES_FLASH_ENABLED`: Enable/disable flash messages (default: false)
-- `ROLES_FLASH_FORMAT`: Set to 'inertia' for InertiaJS format, 'standard' for traditional Laravel flash messages
-- `ROLES_PERMISSION_DENIED_MESSAGE`: Custom message for permission denied errors
-- `ROLES_ROLE_DENIED_MESSAGE`: Custom message for role denied errors
